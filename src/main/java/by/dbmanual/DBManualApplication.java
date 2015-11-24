@@ -1,6 +1,6 @@
 package by.dbmanual;
 
-import by.dbmanual.model.Lesson;
+import by.dbmanual.controller.Lesson;
 import by.dbmanual.model.NoSuchLessonException;
 import by.dbmanual.utils.InternalisationUtils;
 import javafx.application.Application;
@@ -40,7 +40,7 @@ public class DBManualApplication extends Application {
         root.setCenter(splash);
 
         primaryStage.setScene(scene);
-        primaryStage.setTitle(InternalisationUtils.getString("app.db_manual"));
+        primaryStage.setTitle(InternalisationUtils.getString("app.dbManual"));
         primaryStage.show();
     }
 
@@ -67,7 +67,7 @@ public class DBManualApplication extends Application {
     }
 
     private void initSplash() {
-        splash = new Label(InternalisationUtils.getString("app.choose_lesson"));
+        splash = new Label(InternalisationUtils.getString("app.chooseLesson"));
         splash.setFont(new Font(30));
         splash.setTextFill(Color.GRAY);
     }

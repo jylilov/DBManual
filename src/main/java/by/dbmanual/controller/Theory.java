@@ -1,5 +1,6 @@
-package by.dbmanual.model;
+package by.dbmanual.controller;
 
+import by.dbmanual.model.NoSuchTheoryException;
 import javafx.scene.Node;
 import javafx.scene.web.WebView;
 

@@ -1,3 +1,3 @@
 SELECT model, ram, screen
 FROM laptop
-WHERE price > 1000;
+WHERE price > 1000

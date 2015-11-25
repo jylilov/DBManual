@@ -29,6 +29,12 @@ public class LessonExam {
                 event.consume();
             }
         });
+
+        view.getCancelButton().addEventFilter(ActionEvent.ACTION, event -> {
+            if (currentTask != null) {
+                currentTask.finish();
+            }
+        });
     }
 
     public void start() {
@@ -42,6 +48,7 @@ public class LessonExam {
     private Task firstTask() {
         if (!tasks.isEmpty()) {
             currentTask = tasks.get(0);
+            currentTask.start();
         } else {
             currentTask = null;
         }
@@ -52,14 +59,15 @@ public class LessonExam {
     private Task nextTask() {
         int index;
         if (currentTask != null) {
+            currentTask.finish();
             index = tasks.indexOf(currentTask);
             if (index + 1 < tasks.size()) {
                 currentTask = tasks.get(index + 1);
+                currentTask.start();
             } else {
                 currentTask = null;
             }
         }
-
         return currentTask;
     }
 }

@@ -2,3 +2,7 @@
 .idea
 build
 DBManual.iml
+.classpath
+.project
+.settings/
+*.log

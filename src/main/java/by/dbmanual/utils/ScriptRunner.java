@@ -1,4 +1,4 @@
-package by.dbmanual.utils;/*
+/*
  * Slightly modified version of the com.ibatis.common.jdbc.ScriptRunner class
  * from the iBATIS Apache project. Only removed dependency on Resource class
  * and a constructor
@@ -19,6 +19,7 @@ package by.dbmanual.utils;/*
  *  limitations under the License.
  */
 
+package by.dbmanual.utils;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;

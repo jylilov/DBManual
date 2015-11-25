@@ -3,7 +3,6 @@ package by.dbmanual.utils;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.sql.*;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -28,20 +27,19 @@ public class DataBase implements Closeable {
     public void execute(String resourceName) {
         try {
             ScriptRunner runner = new ScriptRunner(connection, true, true);
-            runner.setLogWriter(new PrintWriter(System.out));
+            runner.setLogWriter(null);
             runner.runScript(new InputStreamReader(DataBase.class.getResourceAsStream(resourceName)));
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String [][] queryFromResource(String resourceName) {
+    public String [][] queryFromResource(String resourceName) throws SQLException{
         return query(StringUtils.stringFromInputStream(DataBase.class.getResourceAsStream(resourceName)));
     }
 
-    public String [][] query(String code) {
+    public String [][] query(String code) throws SQLException{
         List<String []> list = new ArrayList<>();
-        System.out.println(code);
         try (ResultSet rs = statement.executeQuery(code)) {
             int length = rs.getMetaData().getColumnCount();
             String [] columnNames = new String[length];
@@ -56,8 +54,6 @@ public class DataBase implements Closeable {
                 }
                 list.add(record);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return list.toArray(new String[list.size()][]);
     }

@@ -18,6 +18,11 @@ public class LessonExam {
             try {
                 Task task = new Task(taskResourceName);
                 tasks.add(task);
+                task.isCompletedProperty().addListener((observable, oldValue, newValue) -> {
+                    if (currentTask.equals(task) && newValue) {
+                        view.getNextButton().fire();
+                    }
+                });
             } catch (NoSuchTaskException e) {
                 e.printStackTrace();
             }

@@ -1,0 +1,141 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Предикаты </h1>
+	<p>
+		Предикаты представляют собой выражения, принимающие истинностное значение. Они могут представлять собой как одно выражение, так и любую комбинацию из неограниченного количества выражений, построенную с помощью булевых операторов <span style="font-weight: bold;">AND</span>, <span style="font-weight: bold;">OR</span> или <span style="font-weight: bold;">NOT</span>. Кроме того, в этих комбинациях может использоваться SQL-оператор <span style="font-weight: bold;">IS</span>, а также круглые скобки для конкретизации порядка выполнения операций.
+	</p>
+	<p>
+		Предикат в языке SQL может принимать одно из трех значений TRUE (истина), FALSE (ложь) или <span style="font-weight: bold;">UNKNOWN</span> (неизвестно). Исключение составляют следующие предикаты: <span style="font-weight: bold;">IS NULL</span> (отсутствие значения),<span style="font-weight: bold;"> EXISTS</span> (существование), <span style="font-weight: bold;">UNIQUE</span> (уникальность) и <span style="font-weight: bold;">MATCH</span> (совпадение), которые не могут принимать значение <span style="font-weight: bold;">UNKNOWN</span>.
+	</p>
+	<p>
+		Правила комбинирования всех трех истинностных значений легче запомнить, обозначив <span style="font-weight: bold;">TRUE</span> как 1, <span style="font-weight: bold;">FALSE</span> как 0 и <span style="font-weight: bold;">UNKNOWN</span> как 1/2 (где-то между истинным и ложным значениями).
+	</p>
+	<p>
+		<span style="font-weight: bold;">AND</span> с двумя истинностными значениями дает минимум этих значений. Например, <span style="font-weight: bold;">TRUE AND UNKNOWN</span> будет равно <span style="font-weight: bold;">UNKNOWN</span>.
+	</p>
+	<p>
+		OR с двумя истинностными значениями дает максимум этих значений. Например, <span style="font-weight: bold;">FALSE OR UNKNOWN</span> будет равно <span style="font-weight: bold;">UNKNOWN</span>.
+	</p>
+	<p>
+		Отрицание истинностного значения равно 1 минус данное истинностное значение. Например, <span style="font-weight: bold;">NOT</span> <span style="font-weight: bold;">UNKNOWN</span> будет равно <span style="font-weight: bold;">UNKNOWN</span>.
+	</p>
+	<p>
+		Логические операторы при отсутствии скобок, как и арифметические операторы, выполняются в соответствии с их старшинством.
+	</p>
+	<p>
+		Одноместная операция <b>NOT</b> имеет наивысший приоритет. 
+	</p>
+    <p>
+    	Предикат в предложении WHERE выполняет реляционную операцию ограничения, т.е. строки, появляющиеся на выходе предложения FROM ограничиваются теми, для которых предикат дает значение TRUE.
+   	</p>
+    <p>
+    	Если <span style="font-style: italic;">cond1</span> и <span style="font-style: italic;">cond2</span> являются простыми условиями, то ограничение по предикату 
+   	</p>
+    <p>
+    	<span style="font-weight: bold;"><span style="font-style: italic;">cond1 AND cond2</span></span><br>
+   	</p>
+    <p>
+    	эквивалентно пересечению ограничений по каждому из предикатов.
+   	</p>
+    <p>
+    	Ограничение по предикату 
+   	</p>
+   	<p>
+   		<span style="font-weight: bold;"><span style="font-style: italic;">cond1 OR cond2</span></span> 
+   	</p>
+    <p>
+    	эквивалентно объединению ограничений по каждому из предикатов, а ограничение по предикату
+   	</p>
+    <p>
+    	<span style="font-style: italic;"><span style="font-weight: bold;">NOT cond1</span></span>
+   	</p>
+   	<p>
+   		эквивалентно взятию разности, когда от исходного отношения вычитается ограничение по предикату <span style="font-style: italic;">cond1</span>.
+	</p>
+    <p>
+    	Обратимся к примерам.
+   	</p>
+    <p>
+		<b>1) Получить информацию о моделях ПК производителя A.</b>
+	</p>
+	<p>Здесь </p>
+	<p>cond1: maker = 'A' ,</p>
+	<p>cond2: type = 'pc'. </p>
+	<h4>cond1 AND cond2</h4>
+	
+	<p>
+		<b>SELECT * FROM product WHERE maker = 'A' AND type = 'pc';</b>
+	</p>
+	
+	<h4>Пересечение</h4>
+	
+	<p>
+		<b>SELECT * FROM product WHERE maker = 'A' INTERSECT SELECT * FROM product WHERE type = 'pc';</b>
+	</p>
+	<p class="task">
+		<b>2) Получить информацию о моделях производителей A и B.</b>
+	</p>
+	<p>Здесь </p>
+	
+	<p>cond1: maker = 'A' ,</p><p>cond2: maker = 'B'. </p>
+	<h4>cond1 OR cond2 </h4>
+	
+	<p>
+		<b>SELECT * FROM product WHERE maker = 'A' OR maker = 'B';</b>
+	</p>
+	<h4>Объединение</h4>
+	
+	<p>
+		<b>SELECT * FROM product WHERE maker = 'A' UNION SELECT * FROM product WHERE maker = 'B';</b>
+	</p>
+	<p>
+		В свою очередь, условия <span style="font-style: italic;">condX</span> могут не быть простыми. Например, 
+	</p>
+	<p class="task">
+		<b>3) Получить информацию о моделях ПК производителей A и B.</b>
+	</p>
+	<p>Решение</p>
+	<p>
+		<b>SELECT * FROM product WHERE (maker = 'A' OR maker = 'B') AND type = 'pc';</b>
+	</p>
+	<p>
+		можно выразить через пересечение
+	</p>	
+	<p>
+		<b>SELECT * FROM product WHERE maker = 'A' OR maker = 'B' INTERSECT SELECT * FROM product WHERE  type = 'pc';</b>
+	</p>
+	<p>
+		а его эквивалентную форму
+	</p>
+	<p>
+		<b>SELECT * FROM product WHERE (maker = 'A' AND type = 'pc') OR (maker = 'B' AND type = 'pc');</b>
+	</p>
+	<p>
+		через объединение
+	</p>
+	<p>
+		<b>SELECT * FROM product WHERE maker = 'A' AND type = 'pc' UNION SELECT * FROM product WHERE maker = 'B' AND type = 'pc';</b>
+	</p>
+	<p>
+		<b>4) Найти модели, которые не являются ПК</b>
+	</p>
+	<p>Здесь </p>
+	<p>cond1: type = 'pc' </p>
+	<h4>NOT cond1</h4>
+	<p>
+		<b>SELECT * FROM product WHERE NOT type = 'pc';</b>
+	</p>
+	<h4>Разность</h4>
+	<p>
+		<b>SELECT * FROM product EXCEPT SELECT * FROM product WHERE type = 'pc';</b>
+	</p>
+	<h4>Несколько слов о производительности </h4>
+	<p>
+		Если на столбцах, по которым выполняется ограничение нет индексов, при выполнении запроса будет выполнено сканирование таблицы. В первых вариантах решений такое сканирование будет выполнено один раз, в то время как в решениях на основе объединения, пересечения и разности запросов таблица сканируется дважды, плюс будет выполнена операция, сравнивающая наборы строк, возвращаемые каждым из запросов (например, Nested Loops). Это делает запрос менее производительным, хотя, возможно, существуют оптимизаторы, способные построить один и тот же план в двух сравниваемых нами случаях. 
+	</p>
+	
+</body>
+</html>

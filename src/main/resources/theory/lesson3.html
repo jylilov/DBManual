@@ -1,0 +1,284 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Явные операции соединения </h1>
+  	<p>
+  		В предложении FROM может быть указана явная операция соединения двух и более таблиц. Среди ряда операций соединения, описанных в стандарте языка SQL, многими серверами баз данных поддерживается только операция соединения по предикату. Синтаксис соединения по предикату имеет вид:
+  	</p>
+  	<p>
+  		<b>FROM <таблица 1> [INNER] {{LEFT | RIGHT | FULL } [OUTER]} JOIN <таблица 2> [ON <предикат>]</b>
+  	</p>
+  	<p>
+  		Соединение может быть либо внутренним (INNER), либо одним из внешних (OUTER). Служебные слова INNER и OUTER можно опускать, поскольку внешнее соединение однозначно определяется его типом — LEFT (левое), RIGHT (правое) или FULL (полное), а просто JOIN будет означать внутреннее соединение.
+	</p>
+	<p>
+		Предикат определяет условие соединения строк из разных таблиц. При этом INNER JOIN означает, что в результирующий набор попадут только те соединения строк двух таблиц, для которых значение предиката равно TRUE. Как правило, предикат определяет эквисоединение по внешнему и первичному ключам соединяемых таблиц, хотя это не обязательно.
+  	</p>
+  	<p>
+  		<b>Найти производителя, номер модели и цену каждого компьютера, имеющегося в базе данных:</b>
+  	</p>
+  	<p>
+  		<b>SELECT maker, Product.model AS model_1, PC.model AS model_2, price FROM Product INNER JOIN PC ON PC.model = Product.model ORDER BY maker, model_2</b>
+  	</p>
+  	<p>
+  		В данном примере в результирующем наборе будут соединяться только те строки из таблиц РС и Product, у которых совпадают номера моделей.
+  	</p>
+  	<p>
+  		Для визуального контроля в результирующий набор включен как номер модели из таблицы PC, так и из таблицы Product:
+  	</p>
+  	<p>
+  		<table border="1">
+  			<thead>
+  				<tr>
+					<th>Maker</th>
+					<th>model_1</th>
+					<th>model_2</th>
+					<th>price</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="">
+				 <td>A    </td> <td>1232   </td> <td> 1232   </td> <td> 600</td>
+				</tr>
+				<tr class="alt">
+				 <td>A   </td> <td> 1232   </td> <td> 1232   </td> <td> 400</td>
+				</tr>
+				<tr class="">
+				 <td>A    </td> <td>1232   </td> <td> 1232    </td> <td>350</td>
+				</tr>
+				<tr class="alt">
+				 <td>A    </td> <td>1232   </td> <td> 1232    </td> <td>350</td>
+				</tr>
+				<tr class="">
+				 <td>A    </td> <td>1233    </td> <td>1233    </td> <td>600</td>
+				</tr>
+				<tr class="alt">
+				 <td>A    </td> <td>1233    </td> <td>1233    </td> <td>950</td>
+				</tr>
+				<tr class="">
+				 <td>A    </td> <td>1233   </td> <td> 1233    </td> <td>980</td>
+				</tr>
+				<tr class="alt">
+				 <td>A    </td> <td>1233   </td> <td> 1233    </td> <td>970</td>
+				</tr>
+				<tr class="">
+				 <td>B    </td> <td>1121   </td> <td> 1121    </td> <td>850</td>
+				</tr>
+				<tr class="alt">
+				 <td>B    </td> <td>1121    </td> <td>1121    </td> <td>850</td>
+				</tr>
+				<tr class="">
+				 <td>B    </td> <td>1121    </td> <td>1121    </td> <td>850</td>
+				</tr>
+				<tr class="alt">
+				 <td>E    </td> <td>1260   </td> <td> 1260    </td> <td>350</td>
+				</tr>
+			</tbody>
+		</table>
+  	</p>
+  	<p>
+  		Внешнее соединение LEFT JOIN означает, что помимо строк, для которых выполняется условие предиката, в результирующий набор попадут все остальные строки из первой таблицы (левой). При этом отсутствующие значения столбцов из правой таблицы будут заменены NULL-значениями.
+  	</p>
+  	<p>
+  		<b>Привести все модели ПК, их производителей и цену:</b>
+  	</p>
+  	<p>
+  		<b>SELECT maker, Product.model AS model_1, pc.model AS model_2, price FROM Product LEFT JOIN PC ON PC.model = Product.model WHERE type = 'pc' ORDER BY maker, PC.model;</b>
+  	</p>
+  	<p>
+  		Обратите внимание на то, что по сравнению с предыдущим примером пришлось использовать предложение WHERE для отбора только производителей ПК. В противном случае в результирующий набор попали бы также и модели портативных компьютеров, и принтеров. В рассмотренном ранее примере это условие было бы излишним, так как соединялись только те строки, у которых совпадали номера моделей, и одной из таблиц была таблица PC, содержащая только модели ПК. В результате выполнения запроса получим:
+  	</p>
+  	<p>
+  		<table border="1">
+  			<thead>
+  				<tr>
+					<th>Maker</th>
+					<th>model_1</th>
+					<th>model_2</th>
+					<th>price</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="">
+				 <td>A    </td> <td>1232    </td> <td>1232    </td> <td>600</td></tr>
+				<tr class="alt">
+				 <td>A    </td> <td>1232    </td> <td>1232    </td> <td>400</td></tr>
+				<tr class="">
+				 <td>A    </td> <td>1232    </td> <td>1232    </td> <td>350</td></tr>
+				<tr class="alt">
+				 <td>A    </td> <td>1232    </td> <td>1232    </td> <td>350</td></tr>
+				<tr class="">
+				 <td>A    </td> <td>1233    </td> <td>1233    </td> <td>600</td></tr>
+				<tr class="alt">
+				 <td>A    </td> <td>1233    </td> <td>1233    </td> <td>950</td></tr>
+				<tr class="">
+				 <td>A    </td> <td>1233    </td> <td>1233    </td> <td>980</td></tr>
+				<tr class="alt">
+				 <td>B    </td> <td>1121    </td> <td>1121    </td> <td>850</td></tr>
+				<tr class="">
+				 <td>B    </td> <td>1121    </td> <td>1121    </td> <td>850</td></tr>
+				<tr class="alt">
+				 <td>B    </td> <td>1121    </td> <td>1121    </td> <td>850</td></tr>
+				<tr class="">
+				 <td>E    </td> <td>2111    </td> <td>NULL    </td> <td>NULL</td></tr>
+				<tr class="alt">
+				 <td>E    </td> <td>2112    </td> <td>NULL    </td> <td>NULL</td></tr>
+				<tr class="">
+				 <td>E    </td> <td>1260    </td> <td>1260    </td> <td>350</td></tr>
+			</tbody>
+		</table>
+  	</p>
+  	<p>
+  		Поскольку моделей 2111 и 2112 из таблицы Product нет в таблице PС, в столбцах из таблицы PС содержится NULL.
+  	</p>
+  	<p>
+  		Соединение RIGHT JOIN обратно соединению LEFT JOIN, то есть в результирующий набор попадут все строки из второй таблицы, которые будут соединяться только с теми строками из первой таблицы, для которых выполняется условие соединения. В нашем случае левое соединение
+  	</p>
+  	<p>
+  		<b>Product LEFT JOIN PC ON PC.model = Product.model</b>
+  	</p>
+  	<p>
+  		будет эквивалентно правому соединению
+  	</p>
+  	<p>
+  		<b>PC RIGHT JOIN Product ON PC.model = Product.model</b>
+  	</p>
+  	<p>
+  		Запрос же
+  	</p>
+  	<p>
+  		<b>SELECT maker, Product.model AS model_1, PC.model AS model_2, price FROM Product RIGHT JOIN PC ON PC.model = Product.model ORDER BY maker, PC.model;</b>
+  	</p>
+  	<p>
+  		даст те же результаты, что и внутреннее соединение, поскольку в правой таблице (PC) нет таких моделей, которые отсутствовали бы в левой таблице (Product), что вполне естественно для типа связи «один ко многим», которая имеется между таблицами PC и Product.
+  	</p>
+  	<p>
+  		Наконец, при полном соединении (FULL JOIN) в результирующую таблицу попадут не только те строки, которые имеют одинаковые значения в сопоставляемых столбцах, но и все остальные строки исходных таблиц, не имеющие соответствующих значений в другой таблице. В этих строках все столбцы той таблицы, в которой не было найдено соответствия, заполняются NULL-значениями. То есть полное соединение представляет собой комбинацию левого и правого внешних соединений. Так, запрос для таблиц A и B, приведенных в начале главы,
+  	</p>
+  	<p>
+  		<b>SELECT A.*, B.* FROM A FULL JOIN B ON A.a = B.c;</b>
+  	</p>
+  	<p>
+  		даст следующий результат:
+  	</p>
+  	<p>
+  		<table border="1">
+  			<thead>
+  				<tr>
+					<th>A</th>
+					<th>b</th>
+					<th>C</th>
+					<th>d</th>
+					</tr></thead>
+			<tbody>
+				<tr class="">
+				 <td>1    </td> <td>2    </td> <td>NULL    </td> <td>NULL</td></tr>
+				<tr class="alt">
+				 <td>2    </td> <td>1    </td> <td>2    </td> <td>4</td></tr>
+				<tr class="">
+				 <td>NULL    </td> <td>NULL    </td> <td>3    </td> <td>3</td></tr>
+			</tbody>
+		</table>
+  	</p>
+  	<p>
+  		Заметим, что это соединение симметрично, то есть A FULL JOIN B эквивалентно B FULL JOIN A. Обратите также внимание на обозначение A.*, что означает вывести все столбцы таблицы А.
+  	</p>
+  	<h3>Ассоциативность и коммутативность соединений</h3>
+  	<p>
+  		Внутреннее и полное внешнее соединения являются как коммутативными, так и ассоциативными, т.е. для них справедливо следующее:
+  	</p>
+  	<p>
+  		<b>A [FULL | INNER] JOIN B = B [FULL | INNER] JOIN A</b>
+  	</p>
+  	<p>
+  		и
+  	</p>
+  	<p>
+  		<b>A [FULL | INNER] JOIN B) [FULL | INNER] JOIN С = A [FULL | INNER] JOIN (B [FULL | INNER] JOIN С)</b>
+  	</p>
+  	<p>
+  		Очевидно, что левое/правое соединения не коммутативны, т.к.
+  	</p>
+  	<p>
+  		<b>A LEFT JOIN B = B RIGHT JOIN A</b>
+  	</p>
+  	<p>
+  		но ассоциативны, например:
+  	</p>
+  	<p>
+  		<b>(A LEFT JOIN B) LEFT JOIN C = A LEFT JOIN (B LEFT JOIN C)</b>
+  	</p>
+  	<p>
+  		С практической точки зрения ассоциативность означает, что мы можем не расставлять скобки, определяющие прядок выполнения соединений.
+  	</p>
+  	<p>
+  		Однако закон ассоциативности, справедливый для однотипных соединений, нарушается, если в одном запросе используются соединения разных типов. Покажем это на примере.
+  	</p>
+  	<p>
+  		<b>WITH a(a_id) AS </b>
+	</p>
+	<p>
+		<b>(SELECT * FROM (VALUES('1'),('2'),('3')) x(y)), </b>
+	</p>
+	<p>
+		<b>b(b_id) AS </b>
+	</p>
+	<p>
+		<b>(SELECT * FROM (VALUES('1'),('2'),('4')) x(y)), </b>
+	</p>
+	<p>
+		<b>c(c_id) AS </b>
+	</p>
+	<p>
+		<b>(SELECT * FROM (VALUES('5'),('2'),('3')) x(y)) </b>
+	</p>
+	<p>
+		<b>SELECT a_id, b_id, c_id  FROM (a LEFT JOIN b ON a_id=b_id) INNER JOIN c ON b_id=c_id </b>
+	</p>
+	<p>
+		<b>UNION ALL </b>
+	</p>
+	<p>
+		<b>SELECT '','','' </b>
+	</p>
+	<p>
+		<b>UNION ALL </b>
+	</p>
+	<p>
+		<b>SELECT a_id, b_id, c_id  FROM  a LEFT JOIN (b INNER JOIN c ON b_id=c_id) ON a_id=b_id;</b>
+  	</p>
+  	<p>
+  		<table border="1">
+  			<thead>
+  				<tr>
+					<th>a_id&nbsp;&nbsp;&nbsp;</th>
+					<th>b_id&nbsp;&nbsp;&nbsp;</th>
+					<th>c_id</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="">
+				 <td>2&nbsp;&nbsp;&nbsp; </td> <td>2&nbsp;&nbsp;&nbsp; </td> <td>2</td></tr>
+				<tr class="alt">
+				 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td> <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td> <td> </td></tr>
+				<tr class="">
+				 <td>1&nbsp;&nbsp;&nbsp; </td> <td>NULL&nbsp;&nbsp;&nbsp; </td> <td>NULL</td></tr>
+				<tr class="alt">
+				 <td>2&nbsp;&nbsp;&nbsp; </td> <td>2&nbsp;&nbsp;&nbsp; </td> <td>2</td></tr>
+				<tr class="">
+				 <td>3&nbsp;&nbsp;&nbsp; </td> <td>NULL&nbsp;&nbsp;&nbsp; </td> <td>NULL</td></tr>
+			</tbody>
+		</table>
+  	</p>
+  	<p>
+  		Результаты двух запросов отделены друг от друга пробельной строкой для удобства.
+  	</p>
+  	<p>
+  		Заметим, что при отсутствии скобок мы получим результат, совпадающий с результатом первого запроса, поскольку соединения будут выполняться в том порядке, в каком они записаны.
+  	</p>
+  	
+	
+</body>
+</html>

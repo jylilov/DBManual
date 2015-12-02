@@ -4,4 +4,4 @@ WHERE maker IN (
 SELECT maker
 FROM product
 WHERE type='printer'
-)
+);

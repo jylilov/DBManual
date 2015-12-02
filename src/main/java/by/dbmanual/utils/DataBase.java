@@ -1,11 +1,13 @@
 package by.dbmanual.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.*;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.MissingResourceException;
 
 public class DataBase {
     private static DataBase singleDataBase;
@@ -31,9 +33,14 @@ public class DataBase {
 
     public void execute(String resourceName) {
         try {
+
             ScriptRunner runner = new ScriptRunner(connection, true, true);
             runner.setLogWriter(null);
-            runner.runScript(new InputStreamReader(DataBase.class.getResourceAsStream(resourceName)));
+            InputStream resourceAsStream = DataBase.class.getResourceAsStream(resourceName);
+            if (resourceAsStream == null) {
+                throw new RuntimeException(String.format("Missing %s resource", resourceName));
+            }
+            runner.runScript(new InputStreamReader(resourceAsStream));
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }

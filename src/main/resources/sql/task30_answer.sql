@@ -1,21 +1,21 @@
-SELECT t1.point, t1.date, `out_m`, inc
+SELECT t1.point, t1.datetime, out_m, inc
 FROM (
-SELECT point, date, SUM(inc) AS inc
+SELECT point, datetime, SUM(inc) AS inc
 FROM income
-GROUP BY point, date
+GROUP BY point, datetime
 ) t1 LEFT JOIN (
-SELECT point, date, SUM(`out_m`) AS `out_m`
+SELECT point, datetime, SUM(out_m) AS out_m
 FROM outcome
-GROUP BY point, date
+GROUP BY point, datetime
 ) t2
-USING(point,date)
+USING(point,datetime)
 UNION
-SELECT t2.point, t2.date, `out_m`, inc
+SELECT t2.point, t2.datetime, out_m, inc
 FROM (
-SELECT point, date, SUM(inc) AS inc FROM income
-GROUP BY point, date
+SELECT point, datetime, SUM(inc) AS inc FROM income
+GROUP BY point, datetime
 ) t1 RIGHT JOIN (
-SELECT point, date, SUM(`out_m`) AS `out_m`
+SELECT point, datetime, SUM(out_m) AS out_m
 FROM outcome
-GROUP BY point, date) t2
-USING(point,date)
+GROUP BY point, datetime) t2
+USING(point,datetime)

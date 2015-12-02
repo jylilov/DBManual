@@ -1,7 +1,10 @@
 package by.dbmanual;
 
 import by.dbmanual.controller.Lesson;
+import by.dbmanual.controller.LessonExam;
 import by.dbmanual.model.NoSuchLessonException;
+import by.dbmanual.model.Profile;
+import by.dbmanual.model.TaskModel;
 import by.dbmanual.utils.InternalisationUtils;
 import javafx.application.Application;
 import javafx.geometry.Orientation;
@@ -16,12 +19,14 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class DBManualApplication extends Application {
     private List<Lesson> lessonList = new LinkedList<>();
     private Label splash;
     private ToolBar toolBar;
     private BorderPane root;
+    private MenuItem userRatingMenuItem;
 
     public static void main(String []args) {
         DBManualApplication.launch(args);
@@ -35,6 +40,42 @@ public class DBManualApplication extends Application {
         initSplash();
         initLessonList();
         initToolBar();
+
+        MenuBar menuBar = new MenuBar();
+
+        Menu profileMenu = new Menu(InternalisationUtils.getString("app.menu.profile"));
+        userRatingMenuItem = new MenuItem(InternalisationUtils.getString("app.menu.ratingLabel"));
+        userRatingMenuItem.setOnAction(event -> updateMenuProfile());
+        Profile.getProfile().intelligenceProperty().addListener((observable, oldValue, newValue) -> updateMenuProfile());
+        MenuItem clearRatingMenuItem = new MenuItem(InternalisationUtils.getString("app.menu.newUser"));
+        clearRatingMenuItem.setOnAction(event -> {
+            updateMenuProfile();
+            Profile.getProfile().clearIntelligence();
+        });
+        profileMenu.getItems().addAll(userRatingMenuItem, clearRatingMenuItem);
+
+        Menu testMenu = new Menu(InternalisationUtils.getString("app.menu.tests"));
+        Menu testForLessonMenuItem = new Menu(InternalisationUtils.getString("app.menu.testForLesson"));
+        for (Lesson l: lessonList) {
+            MenuItem menuItem = new MenuItem(l.getName());
+            menuItem.setOnAction(event -> l.startLessonExam());
+            testForLessonMenuItem.getItems().add(menuItem);
+        }
+        MenuItem finalTestMenuItem = new MenuItem(InternalisationUtils.getString("app.menu.allTests"));
+        testMenu.getItems().addAll(testForLessonMenuItem, finalTestMenuItem);
+
+        List<String> list = TaskModel.getAllTaskModels().stream().map(TaskModel::getResourceName).collect(Collectors.toCollection(LinkedList::new));
+        LessonExam exam = new LessonExam(list.toArray(new String[list.size()]), 10);
+        finalTestMenuItem.setOnAction(event -> exam.start());
+
+
+        Menu aboutMenu = new Menu(InternalisationUtils.getString("app.menu.help"));
+        aboutMenu.getItems().add(new MenuItem(InternalisationUtils.getString("app.menu.help")));
+
+        updateMenuProfile();
+        menuBar.getMenus().addAll(profileMenu, testMenu, aboutMenu);
+
+        root.setTop(menuBar);
 
         root.setLeft(toolBar);
         root.setCenter(splash);
@@ -84,5 +125,11 @@ public class DBManualApplication extends Application {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void updateMenuProfile() {
+        userRatingMenuItem.setText(String.format("%s %.2f",
+                InternalisationUtils.getString("app.menu.ratingLabel"),
+                Profile.getProfile().getIntelligence()));
     }
 }

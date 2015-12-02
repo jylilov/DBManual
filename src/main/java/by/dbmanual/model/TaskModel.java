@@ -1,9 +1,6 @@
 package by.dbmanual.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class TaskModel {
     private final String resourceName;
@@ -34,6 +31,10 @@ public class TaskModel {
             taskMap.put(resourceName, model);
         }
         return model;
+    }
+
+    public static Collection<TaskModel> getAllTaskModels() {
+        return taskMap.values();
     }
 
     @Override

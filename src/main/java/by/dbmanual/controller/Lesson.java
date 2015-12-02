@@ -35,7 +35,7 @@ public class Lesson {
 
     private void initView() {
         Button checkKnowledgeButton = new Button(InternalisationUtils.getString("lesson.checkKnowledge"));
-        checkKnowledgeButton.setOnAction(event -> lessonExam.start());
+        checkKnowledgeButton.setOnAction(event -> startLessonExam());
 
         vBox = new VBox();
         vBox.setAlignment(Pos.CENTER_RIGHT);
@@ -43,6 +43,10 @@ public class Lesson {
         vBox.setPadding(new Insets(10));
         vBox.getChildren().add(theory.getView());
         vBox.getChildren().add(checkKnowledgeButton);
+    }
+
+    public void startLessonExam() {
+        lessonExam.start();
     }
 
     public Node getView() {

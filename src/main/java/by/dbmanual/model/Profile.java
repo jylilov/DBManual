@@ -1,11 +1,14 @@
 package by.dbmanual.model;
 
 import by.dbmanual.controller.Task;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Profile {
+    private static final double DEFAULT_INTELLIGENCE = 1.0;
     private static Profile profile = null;
 
     public static Profile getProfile() {
@@ -15,9 +18,13 @@ public class Profile {
         return profile;
     }
 
-    private double intelligence = 1;
+    private DoubleProperty intelligence = new SimpleDoubleProperty(DEFAULT_INTELLIGENCE);
 
     private Profile() {}
+
+    public void clearIntelligence() {
+        intelligence.set(DEFAULT_INTELLIGENCE);
+    }
 
     private class TaskResult {
         private boolean isCompleted = false;
@@ -34,12 +41,12 @@ public class Profile {
         taskResult.isSkipped = false;
 
         if (isCompleted) {
-            double v = Math.max(0, 0.05 * (task.getDifficulty() - intelligence + 1));
-            intelligence += v;
+            double v = Math.max(0, 0.05 * (task.getDifficulty() - intelligence.get() + 1));
+            intelligence.setValue(intelligence.get() + v);
             task.setDifficulty(task.getDifficulty() - 0.1 * v);
         } else {
-            double v = Math.max(0, 0.01 * (intelligence - task.getDifficulty() + 1));
-            intelligence -= v;
+            double v = Math.max(0, 0.01 * (intelligence.get() - task.getDifficulty() + 1));
+            intelligence.setValue(intelligence.get() - v);
             task.setDifficulty(task.getDifficulty() + 0.1 * v);
         }
 
@@ -64,8 +71,8 @@ public class Profile {
     public void skip(TaskModel task) {
         TaskResult taskResult = getTaskResult(task);
         taskResult.isSkipped = true;
-        double v = Math.max(0, 0.05 * (intelligence - task.getDifficulty() + 1));
-        intelligence -= v;
+        double v = Math.max(0, 0.05 * (intelligence.get() - task.getDifficulty() + 1));
+        intelligence.setValue(intelligence.get() - v);
         task.setDifficulty(task.getDifficulty() + 0.1 * v);
     }
 
@@ -86,7 +93,9 @@ public class Profile {
     }
 
     public double getIntelligence() {
-        return intelligence;
+        return intelligence.get();
     }
+
+    public DoubleProperty intelligenceProperty() { return intelligence; }
 
 }

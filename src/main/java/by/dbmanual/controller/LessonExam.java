@@ -28,7 +28,6 @@ public class LessonExam {
     private LessonExamView view = new LessonExamView();
 
     public LessonExam(String [] taskResourceNames, int taskToComplete) {
-        view.setTitle(InternalisationUtils.getString("lessonExam.title"));
         this.taskToComplete = taskToComplete;
         for (String taskResourceName: taskResourceNames) {
             try {
@@ -49,6 +48,13 @@ public class LessonExam {
             event.consume();
         });
         view.getCancelButton().addEventFilter(ActionEvent.ACTION, event -> currentTask.finish());
+    }
+
+    private void updateTitle() {
+        view.setTitle(String.format("%s (%s %.2f)",
+                InternalisationUtils.getString("lessonExam.title"),
+                InternalisationUtils.getString("lessonExam.ratingLabel"),
+                currentTask.getModel().getDifficulty()));
     }
 
     private void taskCompleted(Task task) {
@@ -78,6 +84,7 @@ public class LessonExam {
         task.start();
         currentTask = task;
         view.setTask(task.getView());
+        updateTitle();
     }
 
     private void skipTask(Task task) {

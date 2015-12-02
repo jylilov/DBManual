@@ -13,9 +13,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.security.AllPermission;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -68,9 +70,20 @@ public class DBManualApplication extends Application {
         LessonExam exam = new LessonExam(list.toArray(new String[list.size()]), 10);
         finalTestMenuItem.setOnAction(event -> exam.start());
 
-
         Menu aboutMenu = new Menu(InternalisationUtils.getString("app.menu.help"));
-        aboutMenu.getItems().add(new MenuItem(InternalisationUtils.getString("app.menu.help")));
+        MenuItem helpMenuItem = new MenuItem(InternalisationUtils.getString("app.menu.help"));
+        aboutMenu.getItems().add(helpMenuItem);
+        helpMenuItem.setOnAction(event -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(InternalisationUtils.getString("app.menu.help"));
+            alert.setHeaderText(InternalisationUtils.getString("app.menu.helpHeader"));
+            WebView webView = new WebView();
+            webView.setPrefHeight(400);
+            webView.setPrefWidth(500);
+            webView.getEngine().load(DBManualApplication.class.getResource(InternalisationUtils.getString("app.menu.helpContentHtmlResource")).toExternalForm());
+            alert.getDialogPane().setContent(webView);
+            alert.showAndWait();
+        });
 
         updateMenuProfile();
         menuBar.getMenus().addAll(profileMenu, testMenu, aboutMenu);

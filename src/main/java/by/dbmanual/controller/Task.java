@@ -43,7 +43,7 @@ public class Task {
 
     private void initView(ResourceBundle resourceBundle) {
         WebView webView = new WebView();
-        webView.setPrefHeight(400);
+        webView.setPrefHeight(450);
         webView.getEngine().load(Task.class.getResource(resourceBundle.getString("task")).toExternalForm());
 
         answerTextArea = new TextArea();

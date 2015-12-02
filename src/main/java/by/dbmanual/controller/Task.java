@@ -80,6 +80,7 @@ public class Task {
                 okButton.setText(InternalisationUtils.getString("task.tryAgain"));
                 alert.setContentText(e.getLocalizedMessage());
             }
+            Profile.getProfile().addAttempt(model, isCompleted);
             alert.showAndWait();
             this.isCompleted.set(isCompleted);
         });
@@ -114,9 +115,7 @@ public class Task {
     }
 
     private boolean checkAnswer(String[][] userAnswer) {
-        boolean result = Arrays.deepEquals(userAnswer, answer);
-        Profile.getProfile().addAttempt(model, result);
-        return result;
+        return Arrays.deepEquals(userAnswer, answer);
     }
 
     private String[][] runCode() throws SQLException {

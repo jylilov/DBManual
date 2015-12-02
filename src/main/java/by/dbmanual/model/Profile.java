@@ -15,7 +15,7 @@ public class Profile {
         return profile;
     }
 
-    private double intelligence = 2;
+    private double intelligence = 1;
 
     private Profile() {}
 
@@ -32,6 +32,22 @@ public class Profile {
         taskResult.attemptsCount++;
         taskResult.isCompleted = isCompleted;
         taskResult.isSkipped = false;
+
+        if (isCompleted) {
+            double v = Math.max(0, 0.05 * (task.getDifficulty() - intelligence + 1));
+            intelligence += v;
+            task.setDifficulty(task.getDifficulty() - 0.1 * v);
+        } else {
+            double v = Math.max(0, 0.01 * (intelligence - task.getDifficulty() + 1));
+            intelligence -= v;
+            task.setDifficulty(task.getDifficulty() + 0.1 * v);
+        }
+
+        System.out.printf("User[%.3f] %s %s[%.3f]%n",
+                Profile.getProfile().getIntelligence(),
+                isCompleted ? "success attempt" : "error attempt",
+                task.getResourceName(),
+                task.getDifficulty());
     }
 
     private TaskResult getTaskResult(TaskModel task) {
@@ -48,6 +64,9 @@ public class Profile {
     public void skip(TaskModel task) {
         TaskResult taskResult = getTaskResult(task);
         taskResult.isSkipped = true;
+        double v = Math.max(0, 0.05 * (intelligence - task.getDifficulty() + 1));
+        intelligence -= v;
+        task.setDifficulty(task.getDifficulty() + 0.1 * v);
     }
 
     public boolean isSkipped(TaskModel task) {

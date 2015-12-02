@@ -28,6 +28,7 @@ public class LessonExam {
     private LessonExamView view = new LessonExamView();
 
     public LessonExam(String [] taskResourceNames, int taskToComplete) {
+        view.setTitle(InternalisationUtils.getString("lessonExam.title"));
         this.taskToComplete = taskToComplete;
         for (String taskResourceName: taskResourceNames) {
             try {
@@ -51,6 +52,10 @@ public class LessonExam {
     }
 
     private void taskCompleted(Task task) {
+        System.out.printf("User[%.2f] complete %s[%.2f]%n",
+                Profile.getProfile().getIntelligence(),
+                task.getModel().getResourceName(),
+                task.getModel().getDifficulty());
         task.finish();
         ++completedTaskCount;
         if (completedTaskCount == taskToComplete) {
@@ -66,16 +71,20 @@ public class LessonExam {
     }
 
     private void startTask(Task task) {
-        view.setTitle(String.format("%s (%.2f) User (%.2f)",
+        System.out.printf("User[%.3f] start %s[%.3f]%n",
+                Profile.getProfile().getIntelligence(),
                 task.getModel().getResourceName(),
-                task.getModel().getDifficulty(),
-                Profile.getProfile().getIntelligence()));
+                task.getModel().getDifficulty());
         task.start();
         currentTask = task;
         view.setTask(task.getView());
     }
 
     private void skipTask(Task task) {
+        System.out.printf("User[%.3f] complete %s[%.3f]%n",
+                Profile.getProfile().getIntelligence(),
+                task.getModel().getResourceName(),
+                task.getModel().getDifficulty());
         Profile.getProfile().skip(task.getModel());
         task.finish();
         startTask(getNextTask());

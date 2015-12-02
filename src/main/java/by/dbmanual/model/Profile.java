@@ -15,18 +15,26 @@ public class Profile {
         return profile;
     }
 
-    private double intelligence = 1;
+    private double intelligence = 2;
 
     private Profile() {}
 
     private class TaskResult {
         private boolean isCompleted = false;
+        private boolean isSkipped = false;
         private int attemptsCount = 0;
     }
 
-    private Map<Task, TaskResult> statisticsMap = new HashMap<>();
+    private Map<TaskModel, TaskResult> statisticsMap = new HashMap<>();
 
-    public void addAttempt(Task task, boolean isCompleted) {
+    public void addAttempt(TaskModel task, boolean isCompleted) {
+        TaskResult taskResult = getTaskResult(task);
+        taskResult.attemptsCount++;
+        taskResult.isCompleted = isCompleted;
+        taskResult.isSkipped = false;
+    }
+
+    private TaskResult getTaskResult(TaskModel task) {
         TaskResult taskResult;
         if (statisticsMap.containsKey(task)) {
             taskResult = statisticsMap.get(task);
@@ -34,7 +42,32 @@ public class Profile {
             taskResult = new TaskResult();
             statisticsMap.put(task, taskResult);
         }
-        taskResult.attemptsCount++;
-        taskResult.isCompleted = isCompleted;
+        return taskResult;
     }
+
+    public void skip(TaskModel task) {
+        TaskResult taskResult = getTaskResult(task);
+        taskResult.isSkipped = true;
+    }
+
+    public boolean isSkipped(TaskModel task) {
+        boolean result;
+        if (result = statisticsMap.containsKey(task)) {
+            result = statisticsMap.get(task).isSkipped;
+        }
+        return result;
+    }
+
+    public boolean isCompleted(TaskModel task) {
+        boolean result;
+        if (result = statisticsMap.containsKey(task)) {
+            result = statisticsMap.get(task).isCompleted;
+        }
+        return result;
+    }
+
+    public double getIntelligence() {
+        return intelligence;
+    }
+
 }

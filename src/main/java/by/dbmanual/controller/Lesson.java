@@ -13,6 +13,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Lesson {
+    private static final int TASK_TO_COMPLETE = 5;
+
     private LessonExam lessonExam;
     private Theory theory;
     private String name;
@@ -24,7 +26,7 @@ public class Lesson {
             ResourceBundle resourceBundle = ResourceBundle.getBundle(resourceName);
             name = resourceBundle.getString("name");
             theory = new Theory(resourceBundle.getString("theory"));
-            lessonExam = new LessonExam(resourceBundle.getString("tasks").split(","));
+            lessonExam = new LessonExam(resourceBundle.getString("tasks").split(","), TASK_TO_COMPLETE);
             initView();
         } catch (MissingResourceException | NoSuchTheoryException e) {
             throw new NoSuchLessonException(e);

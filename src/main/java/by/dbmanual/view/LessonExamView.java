@@ -11,11 +11,11 @@ public class LessonExamView extends Dialog {
         getDialogPane().getButtonTypes().add(ButtonType.NEXT);
         getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
-        getNextButton().setText(InternalisationUtils.getString("lessonExam.skipTask"));
+        getSkipButton().setText(InternalisationUtils.getString("lessonExam.skipTask"));
         getCancelButton().setText(InternalisationUtils.getString("lessonExam.cancel"));
     }
 
-    public Button getNextButton() {
+    public Button getSkipButton() {
         return (Button) getDialogPane().lookupButton(ButtonType.NEXT);
     }
 

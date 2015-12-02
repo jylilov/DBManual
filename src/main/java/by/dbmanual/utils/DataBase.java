@@ -1,6 +1,5 @@
 package by.dbmanual.utils;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
@@ -8,20 +7,26 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataBase implements Closeable {
-    private static long nextId = 0;
+public class DataBase {
+    private static DataBase singleDataBase;
 
-    private long id = nextId++;
     private Connection connection = null;
     private Statement statement = null;
 
     public DataBase()  {
         try {
-            connection = DriverManager.getConnection("jdbc:derby:memory:db" + id + ";create=true");
+            connection = DriverManager.getConnection("jdbc:derby:memory:db;create=true");
             statement = connection.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static DataBase getDataBase() {
+        if (singleDataBase == null) {
+            singleDataBase = new DataBase();
+        }
+        return singleDataBase;
     }
 
     public void execute(String resourceName) {
@@ -58,21 +63,22 @@ public class DataBase implements Closeable {
         return list.toArray(new String[list.size()][]);
     }
 
-    @Override
-    public void close() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            DriverManager.getConnection("jdbc:derby:memory:db" + id + ";shutdown=true");
-        } catch (SQLException ignored) {
+    public static void close() {
+        if (singleDataBase != null) {
+            try {
+                singleDataBase.connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                singleDataBase.statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                DriverManager.getConnection("jdbc:derby:memory:db;shutdown=true");
+            } catch (SQLException ignored) {
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package by.dbmanual.controller;
 
 import by.dbmanual.model.NoSuchTaskException;
 import by.dbmanual.model.Profile;
+import by.dbmanual.model.TaskModel;
 import by.dbmanual.utils.DataBase;
 import by.dbmanual.utils.InternalisationUtils;
 import javafx.beans.property.BooleanProperty;
@@ -21,12 +22,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Task {
-    private final String resourceName;
+    private final TaskModel model;
 
     private VBox vBox;
-    private String createTablesScriptResource;
-    private String dropTablesScriptResource;
-    private String answerScriptResource;
 
     private DataBase dataBase;
     private String [][] answer;
@@ -35,14 +33,8 @@ public class Task {
 
     public Task(String resourceName) throws NoSuchTaskException {
         try {
-            this.resourceName = resourceName;
-
+            model = TaskModel.getTaskModel(resourceName);
             ResourceBundle resourceBundle = ResourceBundle.getBundle(resourceName);
-
-            createTablesScriptResource = resourceBundle.getString("create");
-            dropTablesScriptResource = resourceBundle.getString("drop");
-            answerScriptResource = resourceBundle.getString("answer");
-
             initView(resourceBundle);
         } catch (MissingResourceException e) {
             throw new NoSuchTaskException(String.format("Task resource (\"%s\") not found", resourceName));
@@ -123,7 +115,7 @@ public class Task {
 
     private boolean checkAnswer(String[][] userAnswer) {
         boolean result = Arrays.deepEquals(userAnswer, answer);
-        Profile.getProfile().addAttempt(this, result);
+        Profile.getProfile().addAttempt(model, result);
         return result;
     }
 
@@ -132,10 +124,10 @@ public class Task {
     }
 
     public void start() {
-        dataBase = new DataBase();
-        dataBase.execute(createTablesScriptResource);
+        dataBase = DataBase.getDataBase();
+        dataBase.execute(model.getCreateTablesScriptResource());
         try {
-            answer = dataBase.queryFromResource(answerScriptResource);
+            answer = dataBase.queryFromResource(model.getAnswerScriptResource());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -143,8 +135,7 @@ public class Task {
 
     public void finish() {
         if (dataBase != null) {
-            dataBase.execute(dropTablesScriptResource);
-            dataBase.close();
+            dataBase.execute(model.getDropTablesScriptResource());
         }
     }
 
@@ -160,18 +151,7 @@ public class Task {
         return isCompleted;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Task task = (Task) o;
-
-        return resourceName.equals(task.resourceName);
-    }
-
-    @Override
-    public int hashCode() {
-        return resourceName.hashCode();
+    public TaskModel getModel() {
+        return model;
     }
 }

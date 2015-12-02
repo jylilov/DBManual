@@ -32,7 +32,7 @@ public class DataBase {
     public void execute(String resourceName) {
         try {
             ScriptRunner runner = new ScriptRunner(connection, true, true);
-            runner.setLogWriter(null);
+//            runner.setLogWriter(null);
             runner.runScript(new InputStreamReader(DataBase.class.getResourceAsStream(resourceName)));
         } catch (SQLException | IOException e) {
             e.printStackTrace();

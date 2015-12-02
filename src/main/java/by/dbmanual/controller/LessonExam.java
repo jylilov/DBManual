@@ -96,7 +96,7 @@ public class LessonExam {
         if (list.size() < NEAREST_TASK_COUNT) {
             List<Task> shuffled = new ArrayList<>(tasks);
             Collections.shuffle(shuffled);
-            while (list.size() < NEAREST_TASK_COUNT || list.size() != tasks.size()) {
+            while (list.size() < NEAREST_TASK_COUNT && list.size() != tasks.size()) {
                 for (Task t : shuffled) {
                     if (!list.contains(t)) {
                         list.add(t);

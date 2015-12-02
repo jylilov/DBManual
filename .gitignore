@@ -6,3 +6,4 @@ DBManual.iml
 .project
 .settings/
 *.log
+bin/

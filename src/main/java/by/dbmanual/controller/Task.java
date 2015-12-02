@@ -53,6 +53,19 @@ public class Task {
         Label answerLabel = new Label(InternalisationUtils.getString("task.answerLabel"));
         answerLabel.setLabelFor(answerTextArea);
 
+        Button hintButton = new Button(InternalisationUtils.getString("task.hint"));
+        hintButton.setOnAction(event -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(InternalisationUtils.getString("task.hint"));
+            alert.getDialogPane().setContent(createAnswerTable(answer));
+            alert.setHeaderText(InternalisationUtils.getString("task.hintHeader"));
+            Profile.getProfile().hint(model);
+            System.out.printf("User[%.3f] complete %s[%.3f]%n",
+                    Profile.getProfile().getIntelligence(),
+                    model.getResourceName(),
+                    model.getDifficulty());
+            alert.showAndWait();
+        });
         Button runButton = new Button(InternalisationUtils.getString("task.run"));
         runButton.setOnAction(event -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -85,14 +98,17 @@ public class Task {
             this.isCompleted.set(isCompleted);
         });
 
-        HBox hBox = new HBox(answerTextArea, runButton);
+        VBox buttonBox = new VBox(runButton, hintButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setSpacing(10);
+        HBox hBox = new HBox(answerTextArea, buttonBox);
         hBox.setPadding(new Insets(10));
         hBox.setSpacing(10);
         hBox.setAlignment(Pos.CENTER);
 
-        vBox = new VBox(10, webView, answerLabel, hBox);
-        vBox.setFillWidth(true);
-        vBox.setPadding(new Insets(10));
+        this.vBox = new VBox(10, webView, answerLabel, hBox);
+        this.vBox.setFillWidth(true);
+        this.vBox.setPadding(new Insets(10));
     }
 
     private TableView<String[]> createAnswerTable(String[][] answer) {

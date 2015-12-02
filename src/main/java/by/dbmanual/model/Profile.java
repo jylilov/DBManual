@@ -76,6 +76,13 @@ public class Profile {
         task.setDifficulty(task.getDifficulty() + 0.1 * v);
     }
 
+    public void hint(TaskModel task) {
+        TaskResult taskResult = getTaskResult(task);
+        double v = Math.max(0, 0.025 * (intelligence.get() - task.getDifficulty() + 1));
+        intelligence.setValue(intelligence.get() - v);
+        task.setDifficulty(task.getDifficulty() + 0.1 * v);
+    }
+
     public boolean isSkipped(TaskModel task) {
         boolean result;
         if (result = statisticsMap.containsKey(task)) {

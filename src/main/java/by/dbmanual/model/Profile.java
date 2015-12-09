@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Profile {
-    private static final double DEFAULT_INTELLIGENCE = 1.0;
+    private static final double DEFAULT_INTELLIGENCE = 2.0;
     private static Profile profile = null;
 
     public static Profile getProfile() {

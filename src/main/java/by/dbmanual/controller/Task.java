@@ -60,7 +60,7 @@ public class Task {
             alert.getDialogPane().setContent(createAnswerTable(answer));
             alert.setHeaderText(InternalisationUtils.getString("task.hintHeader"));
             Profile.getProfile().hint(model);
-            System.out.printf("User[%.3f] complete %s[%.3f]%n",
+            System.out.printf("User[%.3f] hint %s[%.3f]%n",
                     Profile.getProfile().getIntelligence(),
                     model.getResourceName(),
                     model.getDifficulty());
@@ -152,6 +152,8 @@ public class Task {
         if (dataBase != null) {
             dataBase.execute(model.getDropTablesScriptResource());
         }
+        isCompleted.set(false);
+        answerTextArea.setText("");
     }
 
     public Node getView() {

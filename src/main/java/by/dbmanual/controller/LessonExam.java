@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 public class LessonExam {
-    private static final int NEAREST_TASK_COUNT = 8;
+    private static final int NEAREST_TASK_COUNT = 4;
     private static final Random random = new Random(137);
 
     private List<Task> tasks = new ArrayList<>();
@@ -88,12 +88,12 @@ public class LessonExam {
     }
 
     private void skipTask(Task task) {
-        System.out.printf("User[%.3f] complete %s[%.3f]%n",
+        Profile.getProfile().skip(task.getModel());
+        task.finish();
+        System.out.printf("User[%.3f] skip %s[%.3f]%n",
                 Profile.getProfile().getIntelligence(),
                 task.getModel().getResourceName(),
                 task.getModel().getDifficulty());
-        Profile.getProfile().skip(task.getModel());
-        task.finish();
         startTask(getNextTask());
     }
 
